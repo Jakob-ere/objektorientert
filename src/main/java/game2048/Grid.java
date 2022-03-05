@@ -12,9 +12,9 @@ public class Grid {
         makeGrid();
         System.out.println(this);
         //randomNewNumber();
-        moveRight();
+        //moveToRight();
         System.out.println(this);
-        moveLeft();
+        moveToLeft();
         System.out.println(this);
        
 
@@ -24,7 +24,10 @@ public class Grid {
         for (int x=0; x < 4; x++) {
             ArrayList<Tile> row = new ArrayList<Tile>();
             for (int y=0; y<4; y++) {
-                if (y == 2) row.add(new Tile(x,y,1));
+                if (y == 2) row.add(new Tile(x,y,4));
+                else if (y == 3) row.add(new Tile(x,y,0));
+                else if (y == 1) row.add(new Tile(x,y,0));
+                else if (y == 0) row.add(new Tile(x,y,4));
                 else {
                     row.add(new Tile(x,y,0));
                 }
@@ -33,40 +36,65 @@ public class Grid {
         }
     }
 
-    public void moveRight() {
+    public void moveToRight() {
         ArrayList<ArrayList<Tile>> rader = this.rows;
         ArrayList<Tile> tomListe = new ArrayList<>();
         for (int x=0; x < 4; x++) {
-            ArrayList<Tile> rad = horizontalMove(rader.get(x),0);
+            ArrayList<Tile> rad = horizontalMovePro(rader.get(x),x,0);
             rader.set(x, tomListe);
             rader.set(x, rad);
         }
     }
-
-    public ArrayList<Tile> horizontalMove(ArrayList<Tile> rad, int z) {
+    
+    public ArrayList<Tile> horizontalMovePro(ArrayList<Tile> rad, int rowNumb, int z) {
         if (z == 1) Collections.reverse(rad);
-        for (int x=0; x < 4; x++) {
-            if (x < 3) {
-                if (rad.get(x).getValue() != 0 && (rad.get(x+1).getValue()).equals(0)) {
-                    Collections.swap(rad,x,x+1);
+        rad.removeIf(Tile -> Tile.getValue().equals(0));
+        if (rad.size() > 1) {
+            for (int y = rad.size()-1; y > 0; y--) {
+                if (rad.get(y-1).canMerge(rad.get(y))){
+                    rad = mergeWith(rad, y-1, y);
+                    y -= 1;
+                }
+                else if (rad.get(y-1).getValue() != 0 && (rad.get(y).getValue()).equals(0)) {
+                    Collections.swap(rad,y,y+1);
                 }
             }
         }
-        if (z==1) Collections.reverse(rad);
+        rad = addTiles(rad, rowNumb);
+        if (z == 1) Collections.reverse(rad);
         return rad;
     }
 
-    public void moveLeft() {
+    public ArrayList<Tile> mergeWith(ArrayList<Tile> rad, int x1, int x2) {
+        rad.get(x1).mergeWithTile(rad.get(x2));
+        Collections.swap(rad, x1, x2);
+        rad.remove(rad.get(x1));
+        return rad;
+    }
+
+    public ArrayList<Tile> addTiles(ArrayList<Tile> rad, int rowNumb) {
+        if (rad.size() > 0 && rad.size() < 4) {
+            for (int y=0; rad.size() < 4; y++) {
+                rad.add(0, new Tile(rowNumb,y,0));
+            }
+        }
+        return rad;
+
+    }
+
+    public void moveToLeft() {
         ArrayList<ArrayList<Tile>> rader = this.rows;
         ArrayList<Tile> tomListe = new ArrayList<>();
         for (int x=0; x < 4; x++) {
-            ArrayList<Tile> rad = horizontalMove(rader.get(x),1);
+            ArrayList<Tile> rad = horizontalMovePro(rader.get(x),x,1);
             rader.set(x, tomListe);
             rader.set(x, rad);
         }
-        
     }
-    
+
+    public boolean tileBiggerZero(Tile tile) {
+        return tile.value > 0;
+    }
 
     /* public ArrayList<ArrayList<Integer>> randomNewNumber() {
         ArrayList<String> emptySquare = new ArrayList<>();
@@ -104,11 +132,29 @@ public class Grid {
     public String toString() {
         String utskrift = ""; 
         for (int x=0; x < 4; x++) {
+            utskrift += "[";
             for (int y=0; y < 4; y++) {
-                utskrift += "[";
-                utskrift += "["+this.rows.get(x).get(y).getValue()+"]";
+                if (tileBiggerZero(this.rows.get(x).get(y))) {
+                    utskrift += "["+this.rows.get(x).get(y).getValue()+"]";
+                }
+                else {
+                    utskrift += "[]";
+                }
             }
             utskrift += "]\n";
+        }
+        return utskrift;
+    }
+    
+    public String printeMande(ArrayList<Tile> lista) {
+        String utskrift = ""; 
+        for (int y=0; y < lista.size(); y++) {
+            if (tileBiggerZero(lista.get(y))) {
+                utskrift += "["+lista.get(y).getValue()+"]";
+            }
+            else {
+                utskrift += "[]";
+            }
         }
         return utskrift;
     }

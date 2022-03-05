@@ -49,6 +49,31 @@ public class Grid {
         return rad;
         
     }
+    
+    /* public ArrayList<Tile> horizontalMove(ArrayList<Tile> rad, int z) {
+        if (z == 1) Collections.reverse(rad);
+        System.out.println(printeMande(rad));
+        for (int x=0; x < 4; x++) {
+            if (x < 3) {
+                if (rad.get(x).canMerge(rad.get(x+1))) {
+                    rad.get(x).mergeWith(rad.get(x+1));
+                    rad.get(x+1).value = 0;
+                    Collections.swap(rad,x, x+1);
+                }
+                if (rad.get(x).getValue() != 0 && (rad.get(x+1).getValue()).equals(0)) {
+                    Collections.swap(rad,x,x+1);
+                }
+                if (x < 2 && rad.get(x).getValue() != 0){
+                    if (rad.get(x+1).getValue()!= 0 && rad.get(x+2).getValue().equals(0)) {
+                        Collections.swap(rad, x+1, x+2);
+                        Collections.swap(rad, x, x+1);
+                    }
+                }
+            }
+        }
+        if (z==1) Collections.reverse(rad);
+        return rad;
+    } */
 
     public ArrayList<ArrayList<Integer>> randomNewNumber() {
         ArrayList<String> emptySquare = new ArrayList<>();
