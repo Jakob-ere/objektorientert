@@ -1,7 +1,6 @@
 package game2048;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Random;
 
@@ -10,27 +9,32 @@ public class Grid {
 
     public Grid() {
         makeGrid();
+        randomNewNumber();
+        randomNewNumber();
+        randomNewNumber();
+        randomNewNumber();
+        randomNewNumber();
+        randomNewNumber();
+        randomNewNumber();
+        randomNewNumber();
+        randomNewNumber();
+        randomNewNumber();
         System.out.println(this);
-        //randomNewNumber();
-        //moveToRight();
-        System.out.println(this);
+        System.out.println("-------");
+        System.out.println("Move to Left:");
         moveToLeft();
         System.out.println(this);
-       
-
+        System.out.println("-------");
+        System.out.println("Move to Right:");
+        moveToRight();
+        System.out.println(this);
     }
 
     public void makeGrid() {
-        for (int x=0; x < 4; x++) {
+        for (int y=0; y < 4; y++) {
             ArrayList<Tile> row = new ArrayList<Tile>();
-            for (int y=0; y<4; y++) {
-                if (y == 2) row.add(new Tile(x,y,4));
-                else if (y == 3) row.add(new Tile(x,y,0));
-                else if (y == 1) row.add(new Tile(x,y,0));
-                else if (y == 0) row.add(new Tile(x,y,4));
-                else {
-                    row.add(new Tile(x,y,0));
-                }
+            for (int x=0; x<4; x++) {
+                row.add(new Tile(y,x,0));
             }
             this.rows.add(row);
         }
@@ -39,10 +43,26 @@ public class Grid {
     public void moveToRight() {
         ArrayList<ArrayList<Tile>> rader = this.rows;
         ArrayList<Tile> tomListe = new ArrayList<>();
-        for (int x=0; x < 4; x++) {
-            ArrayList<Tile> rad = horizontalMovePro(rader.get(x),x,0);
-            rader.set(x, tomListe);
-            rader.set(x, rad);
+        for (int y=0; y < 4; y++) {
+            ArrayList<Tile> rad = horizontalMovePro(rader.get(y),y,0);
+            rader.set(y, tomListe);
+            rader.set(y, rad);
+            for (int x=0; x < 4; x++) {
+                rader.get(y).get(x).updateX(x);
+            }
+        }
+    }
+
+    public void moveToLeft() {
+        ArrayList<ArrayList<Tile>> rader = this.rows;
+        ArrayList<Tile> tomListe = new ArrayList<>();
+        for (int y=0; y < 4; y++) {
+            ArrayList<Tile> rad = horizontalMovePro(rader.get(y),y,1);
+            rader.set(y, tomListe);
+            rader.set(y, rad);
+            for (int x=0; x < 4; x++) {
+                rader.get(y).get(x).updateX(x);
+            }
         }
     }
     
@@ -50,13 +70,11 @@ public class Grid {
         if (z == 1) Collections.reverse(rad);
         rad.removeIf(Tile -> Tile.getValue().equals(0));
         if (rad.size() > 1) {
-            for (int y = rad.size()-1; y > 0; y--) {
-                if (rad.get(y-1).canMerge(rad.get(y))){
-                    rad = mergeWith(rad, y-1, y);
-                    y -= 1;
-                }
-                else if (rad.get(y-1).getValue() != 0 && (rad.get(y).getValue()).equals(0)) {
-                    Collections.swap(rad,y,y+1);
+            for (int x = rad.size()-1; x > 0; x--) {
+                rad.get(x).updateX(x);
+                if (rad.get(x-1).canMerge(rad.get(x))){
+                    rad = mergeWith(rad, x-1, x);
+                    x -= 1;
                 }
             }
         }
@@ -69,73 +87,54 @@ public class Grid {
         rad.get(x1).mergeWithTile(rad.get(x2));
         Collections.swap(rad, x1, x2);
         rad.remove(rad.get(x1));
+        rad.get(x1).updateX(x1);
         return rad;
     }
 
     public ArrayList<Tile> addTiles(ArrayList<Tile> rad, int rowNumb) {
-        if (rad.size() > 0 && rad.size() < 4) {
-            for (int y=0; rad.size() < 4; y++) {
-                rad.add(0, new Tile(rowNumb,y,0));
+        if (rad.size() < 4) {
+            for (int x=0; rad.size() < 4; x++) {
+                rad.add(0, new Tile(rowNumb,x,0));
             }
         }
         return rad;
 
-    }
-
-    public void moveToLeft() {
-        ArrayList<ArrayList<Tile>> rader = this.rows;
-        ArrayList<Tile> tomListe = new ArrayList<>();
-        for (int x=0; x < 4; x++) {
-            ArrayList<Tile> rad = horizontalMovePro(rader.get(x),x,1);
-            rader.set(x, tomListe);
-            rader.set(x, rad);
-        }
     }
 
     public boolean tileBiggerZero(Tile tile) {
         return tile.value > 0;
     }
 
-    /* public ArrayList<ArrayList<Integer>> randomNewNumber() {
-        ArrayList<String> emptySquare = new ArrayList<>();
-        for (int x=0; x < 4; x++) {
-            for (int y=0; y<4; y++) {
-                if (rows.get(x).get(y).equals(0)){
-                    emptySquare.add(x+"."+y);
-                }
+    public ArrayList<ArrayList<Tile>> randomNewNumber() {
+        ArrayList<Tile> emptySquares = new ArrayList<>();
+        for (int y=0; y < 4; y++) {
+            for (int x=0; x < 4; x++) {
+                if (!tileBiggerZero(rows.get(y).get(x))) {
+                    emptySquares.add(rows.get(y).get(x));
+                } 
             }
         }
-        if (emptySquare.size() == 0) {
-            // Har vunnet!
-            return this.rows;
-        }
-
+        System.out.println(printeMande(emptySquares));
+        //if (emptySquares.size() == 0) hasLost();
         Random ran = new Random();
-        int i = ran.nextInt(11);
-        int newSquare = ran.nextInt(emptySquare.size());
-        String square = emptySquare.get(newSquare);
-        int x = Integer.parseInt(square.substring(0,1));
-        int y = Integer.parseInt(square.substring(2,3));
-        
-        if (i < 9) {
-            i = 2;
-            this.rows.get(x).set(y,i);
-        }
-        else {
-            i = 4;
-            this.rows.get(x).set(y,i);
-        }
+        int value = ran.nextInt(11);
+        int newTile = ran.nextInt(emptySquares.size());
+        int yCord = emptySquares.get(newTile).getY();
+        int xCord = emptySquares.get(newTile).getX();
+        if (value <= 7) value = 2;
+        else value = 4;
+        this.rows.get(yCord).set(xCord, new Tile(yCord,xCord,value));
         return this.rows;
-    } */
+    }
 
     @Override
     public String toString() {
         String utskrift = ""; 
-        for (int x=0; x < 4; x++) {
+        for (int y=0; y < rows.size(); y++) {
             utskrift += "[";
-            for (int y=0; y < 4; y++) {
-                if (tileBiggerZero(this.rows.get(x).get(y))) {
-                    utskrift += "["+this.rows.get(x).get(y).getValue()+"]";
+            for (int x=0; x < 4; x++) {
+                if (tileBiggerZero(this.rows.get(y).get(x))) {
+                    utskrift += "["+this.rows.get(y).get(x).getValue()+"]";
                 }
                 else {
                     utskrift += "[]";
@@ -148,9 +147,9 @@ public class Grid {
     
     public String printeMande(ArrayList<Tile> lista) {
         String utskrift = ""; 
-        for (int y=0; y < lista.size(); y++) {
-            if (tileBiggerZero(lista.get(y))) {
-                utskrift += "["+lista.get(y).getValue()+"]";
+        for (int x=0; x < lista.size(); x++) {
+            if (tileBiggerZero(lista.get(x))) {
+                utskrift += "["+lista.get(x).getValue()+"]";
             }
             else {
                 utskrift += "[]";
@@ -161,7 +160,6 @@ public class Grid {
 
     public static void main(String[] args) {
         Grid grid = new Grid();
-    
-        
+        System.out.println(grid.rows.get(0).get(0));
     }
 }
