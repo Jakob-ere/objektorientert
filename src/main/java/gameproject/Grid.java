@@ -75,6 +75,22 @@ public class Grid {
         return rad;
     } */
 
+     /* public ArrayList<Tile> horizontalMovePro(ArrayList<Tile> rad, int z) {
+        ArrayList<Tile> copi = new ArrayList<>(rad);
+        radComparator comparator = new radComparator();
+        Collections.sort(copi, comparator);
+        System.out.println(printeMande(copi));
+        System.out.println("---------");
+        if (z == 1) Collections.reverse(rad);
+        rad.removeIf(Tile -> Tile.getValue().equals(0));
+        if (rad.size() > 1) {
+            mergeRow(rad);
+        }
+        rad = addTiles(rad);
+        if (z == 1) Collections.reverse(rad);
+        return rad;
+    } */
+
     public ArrayList<ArrayList<Integer>> randomNewNumber() {
         ArrayList<String> emptySquare = new ArrayList<>();
         for (int x=0; x < 4; x++) {

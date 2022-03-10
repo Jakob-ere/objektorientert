@@ -6,6 +6,7 @@ import java.util.Random;
 
 public class Grid {
     ArrayList<ArrayList<Tile>> rows = new ArrayList<>();
+    int score = 0;
 
     public Grid() {
         makeGrid();
@@ -23,8 +24,8 @@ public class Grid {
         randomNewNumber();
         System.out.println(this);
         System.out.println("-------");
-        System.out.println("Move up:");
-        moveUp();
+        System.out.println("Move down:");
+        moveDown();
         System.out.println(this);
        
     }
@@ -45,6 +46,7 @@ public class Grid {
         rotateGrid("left");
         updateCordinates();
         randomNewNumber();
+        
     } 
 
     public void moveDown() {
@@ -68,12 +70,12 @@ public class Grid {
     }
 
     public void rotateGrid(String direction) {
-        final int M = rows.size();
         ArrayList<ArrayList<Tile>> nyRows = new ArrayList<>();
         for (int r = 0; r < 4; r++) {
             ArrayList<Tile> rad = addTiles(new ArrayList<Tile>());
             nyRows.add(rad);
         }
+        final int M = rows.size();
         for (int r = 0; r < M; r++) {
             int N = rows.get(r).size();
             for (int c = 0; c < N; c++) {
@@ -83,7 +85,6 @@ public class Grid {
         }
         this.rows = nyRows;
     }
-    
 
     public void moveHorizontal(String direction) {
         int z = 0;
@@ -91,32 +92,29 @@ public class Grid {
         ArrayList<ArrayList<Tile>> rader = this.rows;
         ArrayList<Tile> tomListe = new ArrayList<>();
         for (int y=0; y < 4; y++) {
-            ArrayList<Tile> rad = horizontalMovePro(rader.get(y),z);
+            ArrayList<Tile> rad = moveHorizontalSort(rader.get(y),z);
             rader.set(y, tomListe);
             rader.set(y, rad);
         }
     }
 
-    
-    public ArrayList<Tile> horizontalMovePro(ArrayList<Tile> rad, int z) {
+    public ArrayList<Tile> moveHorizontalSort(ArrayList<Tile> rad, int z) {
+        RowComparator comparator = new RowComparator();
+        Collections.sort(rad, comparator);
         if (z == 1) Collections.reverse(rad);
-        rad.removeIf(Tile -> Tile.getValue().equals(0));
-        if (rad.size() > 1) {
-            mergeRow(rad);
-        }
-        rad = addTiles(rad);
+        mergeRow(rad);
         if (z == 1) Collections.reverse(rad);
         return rad;
     }
 
     public ArrayList<Tile> mergeRow(ArrayList<Tile> rad) {
         for (int x = rad.size()-1; x > 0; x--) {
-            rad.get(x).updateX(x);
-            if (rad.get(x-1).canMerge(rad.get(x))){
+            if (rad.get(x).canMerge(rad.get(x-1))){
                 rad = tileMergeWithTile(rad, x-1, x);
                 x -= 1;
             }
         }
+        addTiles(rad);
         return rad;
     }
     public ArrayList<Tile> tileMergeWithTile(ArrayList<Tile> rad, int x1, int x2) {
@@ -147,18 +145,6 @@ public class Grid {
         return tile.value > 0;
     }
 
-    public ArrayList<Tile> emptyList() {
-        ArrayList<Tile> emptySquares = new ArrayList<>();
-        for (int y=0; y < 4; y++) {
-            for (int x=0; x < 4; x++) {
-                if (!tileBiggerZero(rows.get(y).get(x))) {
-                    emptySquares.add(rows.get(y).get(x));
-                } 
-            }
-        }
-        return emptySquares;
-    }
-
     public ArrayList<ArrayList<Tile>> randomNewNumber() {
         ArrayList<Tile> emptySquares = emptyList();
         Random ran = new Random();
@@ -168,6 +154,35 @@ public class Grid {
         int xCord = emptySquares.get(newTile).getX();
         rows.get(yCord).set(xCord, new Tile(yCord,xCord,value >= 7 ? 4 : 2));
         return rows;
+    }
+
+    public ArrayList<Tile> emptyList() {
+        ArrayList<Tile> emptySquares = new ArrayList<>();
+        for (int r=0; r < 4; r++) {
+            for (int c=0; c < 4; c++) {
+                if (!tileBiggerZero(rows.get(r).get(c))) {
+                    emptySquares.add(rows.get(r).get(c));
+                } 
+            }
+        }
+        return emptySquares;
+    }
+
+    public boolean hasWon() {
+        return this.score >= 2048;
+    }
+
+    public boolean hasLost() {
+        int tilesBiggerThanZero = 0;
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 4; c++) {
+                if (tileBiggerZero(rows.get(r).get(c))) tilesBiggerThanZero += 1;
+                if (r + 1 < 4 && rows.get(r).get(c).canMerge(rows.get(r+1).get(c))) return false;
+                if (c + 1 < 4 && rows.get(r).get(c).canMerge(rows.get(r).get(c+1))) return false;
+            }
+        }
+        if (tilesBiggerThanZero <= 15) return false;
+        return true;
     }
 
     @Override

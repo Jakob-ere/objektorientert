@@ -35,6 +35,7 @@ public class Tile {
     }
 
     public boolean canMerge(Tile newTile) {
+        if (this.value == 0) return false;
         return this.value == newTile.value;
     }
     
