@@ -1,4 +1,4 @@
-package exampleproject;
+/* package exampleproject;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -19,5 +19,5 @@ public class ExampleProjectApp extends Application {
         primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("App.fxml"))));
         primaryStage.show();
     }
-
-}
+s
+} */

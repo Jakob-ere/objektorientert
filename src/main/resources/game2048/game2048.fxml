@@ -6,7 +6,6 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="439.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="game2048.Game2048Controller">
    <children>
@@ -30,10 +29,8 @@
                   <Button layoutX="200.0" layoutY="61.0" mnemonicParsing="false" onAction="#moveBoardRight" text="Right" />
                </children>
             </Pane>
-            <Pane fx:id="paneView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1">
-               <children>
-                  <VBox fx:id="vBoox" layoutX="14.0" layoutY="13.0" prefHeight="259.0" prefWidth="267.0" />
-               </children></Pane>
+            <Pane fx:id="paneView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" >
+            </Pane>
          </children>
       </GridPane>
    </children>
