@@ -48,40 +48,50 @@ public class Tile {
         this.y = y;
     }
 
-    public void setTileColor() {
-        if (value == 2) {
-            farge = new Color(238, 228, 218, 1);
+    public String getTileColor() {
+        String fargeOut = "";
+        if (value == 0) {
+            fargeOut = "#c8dcd2";
+        }
+        else if (value == 2) {
+            fargeOut = "#eee4da";
         }
         else if (value == 4) {
-            farge = new Color(237, 224, 200, 1);
+            fargeOut = "ede0c8";
         }
         else if (value == 8) {
-            farge = new Color(242, 177, 121, 1);
+            fargeOut = "f2b179";
         }
         else if (value == 16) {
-            farge = new Color(245, 149, 99, 1);
+            fargeOut = "f59563";
         }
         else if (value == 32) {
-            farge = new Color(246, 124, 95, 1);
+            fargeOut = "f67c5f";
         }
         else if (value == 64) {
-            farge = new Color(246, 94, 59, 1);
+            fargeOut = "";
         }
         else if (value == 128) {
             farge = new Color(237, 207, 114, 1);
+            fargeOut = "";
         }
         else if (value == 256) {
             farge = new Color(237, 204, 97, 1);
+            fargeOut = "";
         }
         else if (value == 512) {
             farge = new Color(237, 200, 80, 1);
+            fargeOut = "";
         }
         else if (value == 1024) {
             farge = new Color(237, 197, 63, 1);
+            fargeOut = "";
         }
         else if (value == 2048) {
             farge = new Color(237, 194, 46, 1);
+            fargeOut = "";
         }
+        return fargeOut;
     }
 
     @Override

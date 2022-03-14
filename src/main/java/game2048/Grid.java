@@ -12,22 +12,6 @@ public class Grid {
         makeGrid();
         randomNewNumber();
         randomNewNumber();
-        randomNewNumber();
-        randomNewNumber();
-        randomNewNumber();
-        System.out.println(this);
-        randomNewNumber();
-        randomNewNumber();
-        randomNewNumber();
-        randomNewNumber();
-        randomNewNumber();
-        randomNewNumber();
-        System.out.println(this);
-        System.out.println("-------");
-        System.out.println("Move down:");
-        moveDown();
-        System.out.println(this);
-       
     }
 
     public void makeGrid() {
@@ -96,25 +80,27 @@ public class Grid {
             rader.set(y, tomListe);
             rader.set(y, rad);
         }
+        this.rows = rader;
     }
 
     public ArrayList<Tile> moveHorizontalSort(ArrayList<Tile> rad, int z) {
         RowComparator comparator = new RowComparator();
-        Collections.sort(rad, comparator);
-        if (z == 1) Collections.reverse(rad);
-        mergeRow(rad);
-        if (z == 1) Collections.reverse(rad);
-        return rad;
+        ArrayList<Tile> copi = new ArrayList<>(rad);
+        if (z == 1) Collections.reverse(copi);
+        Collections.sort(copi, comparator);
+        mergeRow(copi,z);
+        addTiles(copi);
+        if (z == 1) Collections.reverse(copi);
+        return copi;
     }
 
-    public ArrayList<Tile> mergeRow(ArrayList<Tile> rad) {
+    public ArrayList<Tile> mergeRow(ArrayList<Tile> rad,int z) {
         for (int x = rad.size()-1; x > 0; x--) {
             if (rad.get(x).canMerge(rad.get(x-1))){
                 rad = tileMergeWithTile(rad, x-1, x);
                 x -= 1;
             }
         }
-        addTiles(rad);
         return rad;
     }
     public ArrayList<Tile> tileMergeWithTile(ArrayList<Tile> rad, int x1, int x2) {
@@ -124,14 +110,6 @@ public class Grid {
         return rad;
     }
 
-    public  void updateCordinates() {
-        for (int r = 0; r < rows.size(); r++) {
-            for (int c = 0; c < rows.get(r).size(); c++) {
-                rows.get(r).get(c).updateX(c);
-                rows.get(r).get(c).updateY(r);
-            }
-        }
-    }
     public ArrayList<Tile> addTiles(ArrayList<Tile> rad) {
         if (rad.size() < 4) {
             for (int x=0; rad.size() < 4; x++) {
@@ -139,6 +117,20 @@ public class Grid {
             }
         }
         return rad;
+    }
+
+    public  void updateCordinates() {
+        int highestNumber = 0;
+        for (int r = 0; r < rows.size(); r++) {
+            for (int c = 0; c < rows.get(r).size(); c++) {
+                rows.get(r).get(c).updateX(c);
+                rows.get(r).get(c).updateY(r);
+                if (rows.get(r).get(c).getValue() > highestNumber) {
+                    highestNumber =rows.get(r).get(c).getValue();
+                }
+            }
+        }
+        this.score = highestNumber;
     }
 
     public boolean tileBiggerZero(Tile tile) {
@@ -219,5 +211,6 @@ public class Grid {
     public static void main(String[] args) {
         Grid grid = new Grid();
         System.out.println(grid.rows.get(0).get(0));
+        System.out.println(grid.score);
     }
 }
