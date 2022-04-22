@@ -1,12 +1,9 @@
 package game2048;
 
-import javafx.scene.paint.Color;
-
 public class Tile {
     protected int x;
     protected int y;
     protected Integer value;
-    protected Color farge = new Color(0,0,0,1);
 
     public Tile(int y, int x, Integer value) {
         this.y = y;
@@ -22,12 +19,12 @@ public class Tile {
         return this.value; 
     }
 
-    public int getX() {
-        return this.x;
+    public int getRow() {
+        return this.y;
     }
     
-    public int getY(){
-        return this.y;
+    public int getColumn(){
+        return this.x;
     }
 
     public void mergeWithTile(Tile newTile) {
@@ -36,15 +33,15 @@ public class Tile {
 
     public boolean canMerge(Tile newTile) {
         if (this.value == 0) return false;
-        return this.value == newTile.value;
+        return this.value.equals(newTile.value);
     }
     
-    public void updateX(int x) {
+    public void updateColumn(int x) {
         this.x = x;
 
     }
 
-    public void updateY(int y) {
+    public void updateRow(int y) {
         this.y = y;
     }
 
@@ -69,27 +66,25 @@ public class Tile {
             fargeOut = "f67c5f";
         }
         else if (value == 64) {
-            fargeOut = "";
+            fargeOut = "#f65e3b";
         }
         else if (value == 128) {
-            farge = new Color(237, 207, 114, 1);
-            fargeOut = "";
+            fargeOut = "#f9dd53";
         }
         else if (value == 256) {
-            farge = new Color(237, 204, 97, 1);
-            fargeOut = "";
+            fargeOut = "#85f953";
         }
         else if (value == 512) {
-            farge = new Color(237, 200, 80, 1);
-            fargeOut = "";
+            fargeOut = "#00d15e";
         }
         else if (value == 1024) {
-            farge = new Color(237, 197, 63, 1);
-            fargeOut = "";
+            fargeOut = "#00cad1";
         }
         else if (value == 2048) {
-            farge = new Color(237, 194, 46, 1);
-            fargeOut = "";
+            fargeOut = "#6163db";
+        }
+        else if (value == 4096) {
+            fargeOut = "#edc20f";
         }
         return fargeOut;
     }

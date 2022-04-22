@@ -15,7 +15,7 @@ public class Game2048App extends Application{
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        primaryStage.setTitle("2048 BABYYY");
+        primaryStage.setTitle("2048");
         primaryStage.setScene(new Scene(FXMLLoader.load(getClass().getResource("game2048.fxml"))));
         primaryStage.show();
     }
