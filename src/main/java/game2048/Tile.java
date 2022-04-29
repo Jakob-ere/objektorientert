@@ -31,10 +31,12 @@ public class Tile {
         return this.x;
     }
 
+    //adding this.value with the same value
     public void mergeWithTile(Tile newTile) {
         this.value = this.value + newTile.value;
     }
 
+    //checks if the two tiles can be merged
     public boolean canMerge(Tile newTile) {
         if (this.value == 0) return false;
         return this.value.equals(newTile.value);
@@ -53,6 +55,7 @@ public class Tile {
         this.y = y;
     }
 
+    //gets the tileColor depending on what the value is
     public String getTileColor() {
         String fargeOut = "";
         if (value == 0) {

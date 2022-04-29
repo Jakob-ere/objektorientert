@@ -46,11 +46,11 @@ public class Game2048Controller {
         grid = new Grid();
         grid.randomNewNumber();
         grid.randomNewNumber();
-        System.out.println(grid);
         createBoard();
         gameStillActive = true;
     }
 
+    //creates the board + score
     private void createBoard() {
         grid.updateBoard();
         scoreView.setText(String.valueOf(grid.score));
@@ -74,6 +74,7 @@ public class Game2048Controller {
         }
     }
 
+    //if user presses one of the arrow keys the same direction-move will happen.
     @FXML
     private void keyPressMove(KeyEvent event) {
         KeyCode keyPress = event.getCode();
@@ -83,6 +84,7 @@ public class Game2048Controller {
         else if (keyPress.equals(KeyCode.DOWN)) moveBoardDown();
     }
     
+    //moves the board up
     @FXML
     private void moveBoardUp() {
         if (gameStillActive) {
@@ -95,6 +97,7 @@ public class Game2048Controller {
         }
     }
 
+    //moves the board down
     @FXML
     private void moveBoardDown() {
         if (gameStillActive) {
@@ -107,6 +110,7 @@ public class Game2048Controller {
         }
     }
 
+    //moves the board to the left
     @FXML
     private void moveBoardLeft() {
         if (gameStillActive) {
@@ -119,6 +123,7 @@ public class Game2048Controller {
         }
     }
 
+    //moves the board to the right
     @FXML
     private void moveBoardRight() {
         if (gameStillActive) {
@@ -131,6 +136,7 @@ public class Game2048Controller {
         }
     }
 
+    //tries to save the game
     @FXML
     private void saveFile() {
         try {
@@ -140,6 +146,7 @@ public class Game2048Controller {
         }
     }
 
+    //tries to load the game and draw it
     @FXML 
     private void loadFile() {
         try {
@@ -151,12 +158,14 @@ public class Game2048Controller {
         checkGameDone();
     }
 
+    //returns the input of the user
     private String getFile(){
         String filename = this.saveInput.getText();
         if (filename.isEmpty()) return "game_file";
         return filename;
     }
 
+    //draws a "You-Won!"-text so the user knows he/she/it won
     private void drawWon() {
         Text doneText = new Text();
         doneText.setText("You Won!");
@@ -167,6 +176,7 @@ public class Game2048Controller {
         paneGameDone.getChildren().add(doneText);
     }
 
+    //draw a "You Lost!"-text so the user knows he/she/it lost
     private void drawLoss() {
         Text doneText = new Text();
         doneText.setText("You Lost!");
@@ -176,7 +186,8 @@ public class Game2048Controller {
         doneText.setTranslateY(40);
         paneGameDone.getChildren().add(doneText);
     }
-
+    
+    //checks if the game is done
     private void checkGameDone(){
         if (grid.hasWon()) {
             drawWon();
@@ -191,6 +202,7 @@ public class Game2048Controller {
         }
     }
 
+    //draws the number and the backgroundcolor of the tiles + updates the score
     private void drawBoard() {
         for (int r = 0; r < grid.rows.size(); r++) {
             for (int c = 0; c < grid.rows.get(r).size(); c++) {
@@ -207,6 +219,7 @@ public class Game2048Controller {
         scoreView.setText(String.valueOf(grid.score));
     }
 
+    //shows an alert for the user
     private void showMessage(String errorMessage) {
         Alert alert = new Alert(AlertType.ERROR);
         alert.setTitle("Error");

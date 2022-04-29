@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -154,6 +156,19 @@ public class GridTest {
         fillUpGrid(grid);
         assertThrows(IllegalStateException.class, () -> {
             grid.randomNewNumber();
+        }, "IllegalState skal utløses når grid er full.");
+    }
+
+    @Test 
+    public void testCheckIfMoveHappens() {
+        ArrayList<ArrayList<Tile>> copy = grid.copyBoard();
+        ArrayList<ArrayList<Tile>> rader = null;
+        assertEquals(copy, grid.rows);
+        assertFalse(grid.checkIfMoveHappens(copy));
+        grid.moveToLeft();
+        assertTrue(grid.checkIfMoveHappens(copy));
+        assertThrows(NullPointerException.class, () -> {
+            grid.checkIfMoveHappens(rader);
         }, "IllegalState skal utløses når grid er full.");
     }
 }

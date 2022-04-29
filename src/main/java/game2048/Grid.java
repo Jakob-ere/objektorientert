@@ -12,6 +12,7 @@ public class Grid {
         createGrid();
     }
 
+    //creates a grid with 4x4 tiles with the value 0
     public void createGrid() {
         for (int r=0; r < 4; r++) {
             ArrayList<Tile> row = new ArrayList<Tile>();
@@ -22,6 +23,7 @@ public class Grid {
         }
     }
 
+    //move the tiles in the grid upwards
     public void moveUp() {
         rotateGrid("right");
         moveHorizontal("right");
@@ -29,6 +31,7 @@ public class Grid {
         updateBoard();
     } 
 
+    //move the tiles in the grid downwards
     public void moveDown() {
         rotateGrid("left");
         moveHorizontal("right");
@@ -36,16 +39,19 @@ public class Grid {
         updateBoard();
     }
 
+    //move the tiles in the grid to the right
     public void moveToRight() {
         moveHorizontal("right");
         updateBoard();
     }
 
+    //move the tiles in the grid to the left
     public void moveToLeft() {
         moveHorizontal("left");
         updateBoard();
     }
 
+    //rotates the grid 90 degrees left or right, depending on the argument
     private void rotateGrid(String direction) {
         ArrayList<ArrayList<Tile>> newRows = new ArrayList<>();
         for (int r = 0; r < 4; r++) {
@@ -63,22 +69,24 @@ public class Grid {
         this.rows = newRows;
     }
 
+    //sends the rows to the rowSort()-method and sets it equals to this.rowss
     private void moveHorizontal(String direction) {
         int z = 0;
         if (direction.equals("left")) z = 1;
-        ArrayList<ArrayList<Tile>> rader = this.rows;
-        ArrayList<Tile> tomListe = new ArrayList<>();
+        ArrayList<ArrayList<Tile>> copyRows = this.rows;
+        ArrayList<Tile> emptyListe = new ArrayList<>();
         for (int y=0; y < 4; y++) {
-            ArrayList<Tile> rad = rowSort(rader.get(y),z);
-            rader.set(y, tomListe);
-            rader.set(y, rad);
+            ArrayList<Tile> row = rowSort(copyRows.get(y),z);
+            copyRows.set(y, emptyListe);
+            copyRows.set(y, row);
         }
-        this.rows = rader;
+        this.rows = copyRows;
     }
-
-    private ArrayList<Tile> rowSort(ArrayList<Tile> rad, int z) {
+    
+    //the row get sorted and returns the sorted row.
+    private ArrayList<Tile> rowSort(ArrayList<Tile> row, int z) {
         RowComparator comparator = new RowComparator();
-        ArrayList<Tile> copy = new ArrayList<>(rad);
+        ArrayList<Tile> copy = new ArrayList<>(row);
         if (z == 1) Collections.reverse(copy);
         Collections.sort(copy, comparator);
         mergeRow(copy);
@@ -87,29 +95,35 @@ public class Grid {
         return copy;
     }
 
-    private ArrayList<Tile> mergeRow(ArrayList<Tile> rad) {
-        for (int x = rad.size()-1; x > 0; x--) {
-            if (rad.get(x).canMerge(rad.get(x-1))){
-                rad = mergeTiles(rad, x-1, x);
+    //checks if some tiles can be merge in the row and then sends it to mergeTiles,
+    //returns the mergedRow
+    private ArrayList<Tile> mergeRow(ArrayList<Tile> row) {
+        for (int x = row.size()-1; x > 0; x--) {
+            if (row.get(x).canMerge(row.get(x-1))){
+                row = mergeTiles(row, x-1, x);
                 x -= 1;
             }
         }
-        return rad;
-    }
-    private ArrayList<Tile> mergeTiles(ArrayList<Tile> rad, int x1, int x2) {
-        rad.get(x2).mergeWithTile(rad.get(x1));
-        rad.remove(x1);
-        return rad;
+        return row;
     }
 
-    private ArrayList<Tile> addTiles(ArrayList<Tile> rad) {
-        if (rad.size() > 4) throw new IllegalStateException("A row can not have more than 4 tiles");
-        while (rad.size() < 4) {
-            rad.add(0, new Tile(0));
+    //merges the two tiles and returns the row
+    private ArrayList<Tile> mergeTiles(ArrayList<Tile> row, int x1, int x2) {
+        row.get(x2).mergeWithTile(row.get(x1));
+        row.remove(x1);
+        return row;
+    }
+
+    //adds tiles until the list has 4 tiles.
+    private ArrayList<Tile> addTiles(ArrayList<Tile> row) {
+        if (row.size() > 4) throw new IllegalStateException("A row can not have more than 4 tiles");
+        while (row.size() < 4) {
+            row.add(0, new Tile(0));
         }
-        return rad;
+        return row;
     }
 
+    //updates the score and the coordinates of the tiles
     public void updateBoard() {
         int highestNumber = 0;
         for (int r = 0; r < rows.size(); r++) {
@@ -124,6 +138,7 @@ public class Grid {
         this.score = highestNumber;
     }
 
+    //adds a randomnumber, either 2 or 4, to the board
     public ArrayList<ArrayList<Tile>> randomNewNumber() {
         ArrayList<Tile> emptySquares = emptyList();
         if (emptySquares.size() < 1) throw new IllegalStateException("The board is full, it can't place a new one.");
@@ -136,6 +151,7 @@ public class Grid {
         return rows;
     }
 
+    //creates a list of the tiles that have value = 0
     public ArrayList<Tile> emptyList() {
         ArrayList<Tile> emptySquares = new ArrayList<>();
         for (int r=0; r < 4; r++) {
@@ -148,12 +164,9 @@ public class Grid {
         return emptySquares;
     }
 
-    public boolean hasWon() {
-        return this.score >= 2048;
-    }
-
+    //copies the rows of a grid-object.
     public ArrayList<ArrayList<Tile>> copyBoard() {
-        if (rows != null) {
+        if (rows.size() < 3 || rows.size() > 0) {
             ArrayList<ArrayList<Tile>> copi = new ArrayList<>();
             for(int r = 0; r < rows.size(); r++) {
                 copi.add(rows.get(r));
@@ -162,6 +175,7 @@ public class Grid {
         } else throw new IllegalStateException("Cannot copy a non existent grid.");
     }
 
+    //checks if some move or merge has happened
     public boolean checkIfMoveHappens(ArrayList<ArrayList<Tile>> copy) {
         if (copy != null || this.rows != null) {
             for (int r = 0; r < 4; r++) {
@@ -171,10 +185,16 @@ public class Grid {
                     }
                 }
             }
-        } else throw new IllegalStateException("One of the two grids can't be null.");
+        } else throw new NullPointerException("One of the two grids can't be null.");
         return false;
     }
 
+    //checks if score is greater than 2048
+    public boolean hasWon() {
+        return this.score >= 2048;
+    }
+
+    //checks if board can move in any directions
     public boolean hasLost() {
         int tilesBiggerThanZero = 0;
         for (int r = 0; r < 4; r++) {
@@ -204,29 +224,5 @@ public class Grid {
             utskrift += "]\n";
         }
         return utskrift;
-    }
-    
-    public String printeMande(ArrayList<Tile> lista) {
-        String utskrift = ""; 
-        for (int x=0; x < lista.size(); x++) {
-            if (lista.get(x).greaterThanZero()) {
-                utskrift += "["+lista.get(x).getValue()+"]";
-            }
-            else {
-                utskrift += "[]";
-            }
-        }
-        return utskrift;
-    }
-
-    public static void main(String[] args) {
-        Grid grid = new Grid();
-        grid.rows.get(0).set(0, new Tile(16));
-        grid.rows.get(0).set(1, new Tile(16));
-        grid.rows.get(0).set(2, new Tile(32));
-        grid.rows.get(0).set(3, new Tile(16));
-        System.out.println(grid.rows);
-        grid.moveToLeft();
-        System.out.println(grid.rows);
     }
 }
