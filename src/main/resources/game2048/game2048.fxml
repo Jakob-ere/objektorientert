@@ -52,7 +52,6 @@
                   <Button layoutX="195.0" layoutY="36.0" mnemonicParsing="false" onAction="#saveFile" onKeyPressed="#keyPressMove" text="Save File" />
                   <Button layoutX="194.0" layoutY="69.0" mnemonicParsing="false" onAction="#loadFile" onKeyPressed="#keyPressMove" text="Load File" />
                   <TextField fx:id="saveInput" layoutX="23.0" layoutY="36.0" onKeyPressed="#keyPressMove" />
-                  <Text fx:id="errorMessageText" fill="RED" layoutX="23.0" layoutY="86.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Filen finnes ikke, prøv igjen!" visible="false" />
                </children>
             </Pane>
          </children>
